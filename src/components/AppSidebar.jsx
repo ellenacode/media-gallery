@@ -24,22 +24,27 @@ import { setItems, setSelectedFolder, setSelectedFilters } from "../actions/gall
 
 export function AppSidebar() {
     const dispatch = useDispatch()
-    const selectedFolder = useSelector((state) => state.gallery.selectedFolder)
+    const items = useSelector((state) => state.gallery.items)
+    // const selectedFolder = useSelector((state) => state.gallery.selectedFolder)
     const selectedFilters = useSelector((state) => state.gallery.selectedFilters)
     // const filterImages = selectedFilters.filter(value => value.title === 'Images')
     // const filteredImages = gallery.filter(item => filterImages.type?.includes(item.format))
 
-    //  useEffect(() => {
-    //     dispatch(setSelectedFolder(item))
-    //   }, [])
-    const handleSelect = (item) => {
+    const handleSelectFolder = (item) => {
         dispatch(setSelectedFolder(item.title))
         dispatch(setItems(gallery))
     }
-    console.log(selectedFolder)
-    // console.log(filterImages, filteredImages)
-    console.log('selectedFilters',selectedFilters)
-    // console.log(filterImages)
+
+    const handleSelectFilter = (checked, item) => {
+        let items = [...selectedFilters]
+        if (checked) {
+            items.push(item)
+        } else {
+            items = items?.filter(element => element.id !== item.id)
+        }
+        dispatch(setSelectedFilters(items))
+    }
+
     return (
         <Sidebar>
             <SidebarHeader>
@@ -55,12 +60,12 @@ export function AppSidebar() {
                         <SidebarMenu>
                             {folders.map(item => (
                                 <SidebarMenuItem key={item.id}>
-                                    <SidebarMenuButton asChild onClick={() => handleSelect(item)}>
+                                    <SidebarMenuButton asChild onClick={() => handleSelectFolder(item)}>
                                         <div className="flex justify-between items-center">
                                             <div className="flex items-center gap-2">
                                                 <FolderOpen size={16} />
                                                 <span>{item.title}</span>
-                                                <Badge variant="outline">0</Badge>
+                                                <Badge variant="outline">{items?.length}</Badge>
                                             </div>
                                         </div>
                                     </SidebarMenuButton>
@@ -84,8 +89,8 @@ export function AppSidebar() {
                                     </CollapsibleTrigger>
                                     <Checkbox
                                         className="mx-1"
-                                        // checked={ }
-                                        onCheckedChange={() => dispatch(setSelectedFilters(filters))}
+                                        checked={selectedFilters.length === filters.length}
+                                        onCheckedChange={(checked) => dispatch(setSelectedFilters(checked ? filters : []))}
                                     />
                                 </div>
                             </SidebarGroupLabel>
@@ -104,12 +109,8 @@ export function AppSidebar() {
                                                         </div>
                                                         <Checkbox
                                                             className="mx-1"
-                                                            // checked={}
-                                                            onCheckedChange={() => {
-                                                                dispatch(setSelectedFilters(item))
-                                                                // dispatch(setItems())
-                                                            }}
-                                                        // onCheckedChange={() => dispatch(removeSelectedFilters([]))}
+                                                            checked={!!selectedFilters?.filter(element => element.id === item.id)?.length}
+                                                            onCheckedChange={(checked) => handleSelectFilter(checked, item)}
                                                         />
                                                     </div>
                                                 </SidebarMenuButton>

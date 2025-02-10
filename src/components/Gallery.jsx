@@ -13,7 +13,7 @@ export function Gallery() {
     const items = useSelector((state) => state.gallery.items)
     const selectedItems = useSelector((state) => state.gallery.selectedItems)
 
-    const handleSelecItem = (checked, item) => {
+    const handleSelectItem = (checked, item) => {
         let items = [...selectedItems]
         if (checked) {
             items.push(item)
@@ -44,7 +44,7 @@ export function Gallery() {
                                 <Checkbox
                                     className="absolute bottom-0 left-0"
                                     checked={!!selectedItems?.filter(element => element.id === item.id)?.length}
-                                    onCheckedChange={(checked) => handleSelecItem(checked, item)}
+                                    onCheckedChange={(checked) => handleSelectItem(checked, item)}
                                 />
                             </AspectRatio>
                             <p className="text-sm flex justify-center">{`${item.title}.${item.format}`}</p>
