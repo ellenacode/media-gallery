@@ -1,38 +1,37 @@
-import { gallery } from "../constants"
-
 const initialState = {
   selectedFolder: 'Your folder',
-  items: gallery,
+  items: [],
   selectedItems: [],
-  selectedFilters: []
+  selectedFilters: [],
+  selectedFilterType: []
 }
 
 const galleryReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'SET_SELECTED_FOLDER':
       return {
-        ...state, selectedFolder: action.payload
+        ...state, 
+        selectedFolder: action.payload
       }
     case 'SET_ITEMS':
       return {
         ...state,
-        ...action.payload
+        items: action.payload
       }
     case 'SET_SELECTED_ITEMS':
       return {
         ...state,
         selectedItems: action.payload
       }
-    case 'REMOVE_SELECTED_ITEMS':
-      return {
-        ...state,
-        selectedItems: action.payload
-      }
-
     case 'SET_SELECTED_FILTERS':
       return {
         ...state,
         selectedFilters: action.payload
+      }
+    case 'SET_COUNTER':
+      return {
+        ...state,
+        counter: action.payload
       }
     default:
       return state

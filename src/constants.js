@@ -16,7 +16,7 @@ export const filters = [
     {
         id: '1',
         title: "Images",
-        type: "jpg, jpeg, png",
+        type: "jpg/jpeg/png",
         icon: Image,
     },
     {

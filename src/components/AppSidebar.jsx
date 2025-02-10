@@ -20,19 +20,31 @@ import { Badge } from "@/components/ui/badge"
 import Logo from "../assets/logo.svg"
 import { filters, folders, gallery } from "../constants"
 import { useDispatch, useSelector } from "react-redux"
-import { setItems, setSelectedFolder, setSelectedFilters } from "../actions/gallery"
+import { setItems, setSelectedFolder, setSelectedFilters, setCounter } from "../actions/gallery"
+import { useEffect } from "react"
 
 export function AppSidebar() {
     const dispatch = useDispatch()
     const items = useSelector((state) => state.gallery.items)
-    // const selectedFolder = useSelector((state) => state.gallery.selectedFolder)
+    const selectedFolder = useSelector((state) => state.gallery.selectedFolder)
     const selectedFilters = useSelector((state) => state.gallery.selectedFilters)
-    // const filterImages = selectedFilters.filter(value => value.title === 'Images')
-    // const filteredImages = gallery.filter(item => filterImages.type?.includes(item.format))
+    const counter = useSelector((state) => state.gallery.counter)
+
+    const filterType = selectedFilters?.map(item => item.type)
+    const filteredItems = items?.filter(element => filterType.join(',').includes(element.format))
+
+    useEffect(() => {
+        if (selectedFolder === 'Your folder') {
+            dispatch(setItems(gallery))
+        } else {
+            dispatch(setItems([]))
+        }
+        dispatch(setCounter(items.length))
+
+    }, [selectedFolder])
 
     const handleSelectFolder = (item) => {
         dispatch(setSelectedFolder(item.title))
-        dispatch(setItems(gallery))
     }
 
     const handleSelectFilter = (checked, item) => {
@@ -44,7 +56,6 @@ export function AppSidebar() {
         }
         dispatch(setSelectedFilters(items))
     }
-
     return (
         <Sidebar>
             <SidebarHeader>
@@ -61,12 +72,12 @@ export function AppSidebar() {
                             {folders.map(item => (
                                 <SidebarMenuItem key={item.id}>
                                     <SidebarMenuButton asChild onClick={() => handleSelectFolder(item)}>
-                                        <div className="flex justify-between items-center">
-                                            <div className="flex items-center gap-2">
-                                                <FolderOpen size={16} />
-                                                <span>{item.title}</span>
-                                                <Badge variant="outline">{items?.length}</Badge>
-                                            </div>
+                                        <div className={`flex items-center gap-2 ${selectedFolder === item.title ? 'bg-secondary' : ''}`}>
+                                            <FolderOpen size={16} />
+                                            <span>{item.title}</span>
+                                            <Badge variant="outline">
+                                                {selectedFolder !== item.title ? counter : items.length}
+                                            </Badge>
                                         </div>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
@@ -105,7 +116,14 @@ export function AppSidebar() {
                                                         <div className="flex items-center gap-2">
                                                             <item.icon size={16} />
                                                             <span>{item.title}</span>
-                                                            <Badge variant="outline">0</Badge>
+                                                            <Badge variant="outline">{
+                                                                item.title === "GIFs" ?
+                                                                    filteredItems.filter(value => value.format === item.type)?.length
+                                                                    : item.title === 'Images' ?
+                                                                        filteredItems.filter(value => item.type.includes(value.format))?.length
+                                                                        : filteredItems.filter(value => value.format === 'mp4')?.length
+                                                            }
+                                                            </Badge>
                                                         </div>
                                                         <Checkbox
                                                             className="mx-1"

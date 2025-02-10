@@ -13,12 +13,12 @@ export const setSelectedItems = (item) => ({
 	payload: item,
 })
 
-export const removeSelectedItems = (action) => ({
-	type: 'REMOVE_SELECTED_ITEMS',
-	payload: action
-})
-
 export const setSelectedFilters = (items) => ({
 	type: 'SET_SELECTED_FILTERS',
 	payload: items,
+})
+
+export const setCounter = (value) => ({
+	type: 'SET_COUNTER',
+	payload: value,
 })
