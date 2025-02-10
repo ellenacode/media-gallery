@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { useDispatch, useSelector } from "react-redux"
 import { setSelectedItems } from "../actions/gallery"
+import { gallery } from "../constants"
 
 export function Gallery() {
     const dispatch = useDispatch()
@@ -12,14 +13,24 @@ export function Gallery() {
     const items = useSelector((state) => state.gallery.items)
     const selectedItems = useSelector((state) => state.gallery.selectedItems)
 
+    const handleSelecItem = (checked, item) => {
+        let items = [...selectedItems]
+        if (checked) {
+            items.push(item)
+        } else {
+            items = items?.filter(element => element.id !== item.id)
+        }
+        dispatch(setSelectedItems(items))
+    }
+
     return (
         <main>
             <div className="flex items-center space-x-0.5 m-2">
                 <Checkbox
                     checked={!!selectedItems?.length}
-                    // onCheckedChange={() => dispatch(removeSelectedItems([]))}
+                    onCheckedChange={(checked) => dispatch(setSelectedItems(checked ? gallery : []))}
                 />
-                <label className="text-sm" >
+                <label className="text-sm">
                     <Badge variant="outline" className="p-1">{selectedItems?.length}</Badge>selected
                 </label>
             </div>
@@ -32,8 +43,8 @@ export function Gallery() {
                                 <img src={item.src} className="rounded-sm object-cover" />
                                 <Checkbox
                                     className="absolute bottom-0 left-0"
-                                    checked={!!selectedItems?.find(element => element.id === item.id && !!element.checked)}
-                                    onCheckedChange={(checked) => dispatch(setSelectedItems({ ...item, checked }))}
+                                    checked={!!selectedItems?.filter(element => element.id === item.id)?.length}
+                                    onCheckedChange={(checked) => handleSelecItem(checked, item)}
                                 />
                             </AspectRatio>
                             <p className="text-sm flex justify-center">{`${item.title}.${item.format}`}</p>

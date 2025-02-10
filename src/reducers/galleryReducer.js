@@ -21,7 +21,7 @@ const galleryReducer = (state = initialState, action) => {
     case 'SET_SELECTED_ITEMS':
       return {
         ...state,
-        selectedItems: [...state.selectedItems, action.payload].filter(item => !!item.checked)
+        selectedItems: action.payload
       }
     case 'REMOVE_SELECTED_ITEMS':
       return {
@@ -32,7 +32,7 @@ const galleryReducer = (state = initialState, action) => {
     case 'SET_SELECTED_FILTERS':
       return {
         ...state,
-        selectedFilters: [...state.selectedFilters, action.payload]
+        selectedFilters: action.payload
       }
     default:
       return state
